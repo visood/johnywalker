@@ -13,7 +13,7 @@ class SunService(wsClient: WSClient) {
   def getSunInfo(lat: Double, lon: Double) : Future[SunInfo] = {
     val responseF = wsClient.url(
       "http://api.sunrise-sunset.org/json?" +
-        "lat=46.5197&lng=6.6323&formatted=0"
+        s"lat=$lat&lng=$lon&formatted=0"
     ).get()
 
     responseF.map { response =>
@@ -22,7 +22,7 @@ class SunService(wsClient: WSClient) {
       val sunsetTimeStr  = (json \ "results" \ "sunset").as[String]
       val sunriseTime    = DateTime.parse(sunriseTimeStr)
       val sunsetTime     = DateTime.parse(sunsetTimeStr)
-      val formatter      = DateTimeFormat.forPattern("HH:mm::ss").
+      val formatter      = DateTimeFormat.forPattern("HH:mm:ss").
         withZone(DateTimeZone.forID("Europe/Zurich"))
 
       SunInfo(formatter.print(sunriseTime), formatter.print(sunsetTime))
