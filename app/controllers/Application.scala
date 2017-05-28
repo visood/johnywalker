@@ -18,7 +18,7 @@ import play.api.Play.current
 
 import org.joda.time.{DateTimeZone, DateTime}
 import org.joda.time.format.DateTimeFormat
-import model.SunInfo
+import model.{CombinedData}
 import services.{SunService, WeatherService}
 
 /**
@@ -30,7 +30,10 @@ class Application(sunService: SunService,
                   actorSystem: ActorSystem) extends Controller
 {
 
-  def index = Action.async {
+  def index = Action {
+    Ok(views.html.index())
+  }
+  def data = Action.async {
     val lat = 46.5197
     val lon = 6.6323
 
@@ -47,7 +50,7 @@ class Application(sunService: SunService,
       temperature <- temperatureF
       requests    <- requestsF
     } yield {
-      Ok(views.html.index(sunInfo, temperature, requests))
+      Ok(Json.toJson(CombinedData(sunInfo, temperature, requests)))
     }
   }
 }
