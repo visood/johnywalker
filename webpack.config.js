@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 module.exports = {
   entry: './ui/entry.js',
@@ -19,12 +20,12 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: [
-          "style-loader",
-          "css-loader",
-          "sass-loader"
-        ]
+        loader: ExtractTextPlugin.extract({fallback: "style-loader",
+                                           use: "css-loader!sass-loader"})
       }
     ]
-  }
+  },
+  plugins: [
+    new ExtractTextPlugin("styles.css")
+  ]
 }
